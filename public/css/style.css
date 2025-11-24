@@ -1,50 +1,108 @@
+@font-face {
+  font-family: 'Pixelify Sans';
+  src: url('../fonts/PixelifySans-Regular.ttf');
+}
+
 html {
     position: relative;
     min-height: 100%;
 }
 
 body {
-    /* Margin bottom by footer height */
-    margin-bottom: 60px;
+    background-color: #82ccdd;
+    font-family: "Pixelify Sans";
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
 }
 
 .container-full {
     margin: 0 auto;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.footer {
-    position: absolute;
-    bottom: 0;
+/* ============================================
+   STRUCTURE PRINCIPALE
+   ============================================ */
+
+.row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+}
+
+.col-xs-2, .col-sm-2 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.list-group{
+    margin-bottom: 5px;
+}
+
+.list-group-item button {
     width: 100%;
-    /* Set the fixed height of the footer here */
-    height: 60px;
-    background-color: #f5f5f5;
+    display: block;
+    text-align: left;
 }
 
-
-/* Custom page CSS
--------------------------------------------------- */
-
-
-/* Not required for template or sticky footer method. */
-
-body > .container {
-    padding: 60px 15px 0;
+.list-group-item-hardware button {
+    width: auto;
+    display: block;
+    text-align: left;
+    padding : 5px 15px;
 }
 
-.container .text-muted {
-    margin: 20px 0;
+.list-group-item-mobile-anims {
+    align-content: center;
+    text-align: center;
+    margin-bottom: 5px;
 }
 
-.footer > .container {
-    padding-right: 15px;
-    padding-left: 15px;
+.list-group-item-mobile-anims button {
+    width: 30%;
+    text-align: center;
+    margin-top: 5px;
+    padding : 5px;
+    align-content: space-around;
 }
 
-.elmt {
-    padding-left: 5px;
-    padding-right: 5px;
+.list-group-item-mobile button {
+    width: 100%;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.list-group-item-mobile-sauts button {
+    width: 48%;
+    height: 10%;
+    text-align: center;
+}
+
+.list-group-item-mobile-nav button {
+    margin-top:0px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    width: 48%;
+    text-align: center;
+    vertical-align: middle;
+    background-color: orange;
+}
+
+.list-group-item-mobileblock button {
+    width: 100%;
+    display: block;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: orange;
+}
+
+li {
+    list-style-type: none;
 }
 
 .hardware-info {
@@ -59,19 +117,644 @@ body > .container {
     width: 50%;
 }
 
-.list-group-item button {
-    width: 100%;
-    display: block;
-    text-align: left;
+/* ============================================
+   VIDÉO
+   ============================================ */
 
-}
-
-#media {
+#mediamobile {
     text-align: center;
 }
 
-#media >img {
-    width: 640px;
-    height: 480px;
+#mediamobile >img {
+    width: 418px;
+    height: 313px;
     margin: 0 auto;
+    align-content: center;
+    background-color:beige;
+}
+
+.img-responsive{
+  border-width: 10px;
+  box-shadow: 3px 3px 20px #4a69bd, -3px -3px 20px #4a69bd;
+}
+
+/* ============================================
+   BOUTONS
+   ============================================ */
+
+.btn{
+  padding: 8px 20px;
+  border-radius: 0px;
+  border-width: 2.5px;
+  border-left-color: pink;
+  border-right-color: blue;
+  border-block-color: orange blue;
+  box-shadow: 5px 3px lightgrey;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+/* ============================================
+   SECTION BASSE (LOG + AIDE)
+   ============================================ */
+
+.bottom-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.bottom-buttons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Radio Switch pour la langue */
+.lang-switch {
+  position: relative;
+  display: inline-flex;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  padding: 4px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.lang-switch input[type="radio"] {
+  display: none;
+}
+
+.lang-label {
+  position: relative;
+  z-index: 2;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.lang-switch input[type="radio"]:checked + .lang-label {
+  color: white;
+}
+
+.lang-slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  border-radius: 50px;
+  transition: transform 0.3s ease;
+  z-index: 1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.lang-switch input[type="radio"]:checked#lang-fr ~ .lang-slider {
+  transform: translateX(100%);
+}
+
+#log {
+  width: 90%;
+  max-width: 800px;
+  height: 50px;
+  background-color: lightpink;
+  text-align: center;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 0 auto;
+}
+
+pre#log{
+  font-size: 10px;
+  margin: 0;
+}
+
+.help-button {
+  background-color: #5bc0de;
+  color: white;
+  border: 3px solid #46b8da;
+  border-radius: 50px;
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+.help-button:hover {
+  background-color: #31b0d5;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.help-button i {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* ============================================
+   RESPONSIVE - DESKTOP
+   ============================================ */
+
+@media (min-width: 992px) {
+  .col-xs-2:first-child, .col-sm-2:first-child {
+    flex: 0 0 16%;
+    max-width: 16%;
+  }
+  
+  .col-xs-10, .col-sm-8 {
+    flex: 0 0 68%;
+    max-width: 68%;
+  }
+  
+  .col-xs-2:last-child, .col-sm-2:last-child {
+    flex: 0 0 16%;
+    max-width: 16%;
+  }
+  
+  #mediamobile > img {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+  }
+}
+
+/* Tablettes et petits desktop */
+@media (max-width: 991px) and (min-width: 768px) {
+  .col-xs-2:first-child, .col-sm-2:first-child {
+    flex: 0 0 15%;
+    max-width: 15%;
+  }
+  
+  .col-xs-10, .col-sm-8 {
+    flex: 0 0 70%;
+    max-width: 70%;
+  }
+  
+  .col-xs-2:last-child, .col-sm-2:last-child {
+    flex: 0 0 15%;
+    max-width: 15%;
+  }
+  
+  #mediamobile > img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+  }
+  
+  .btn {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  
+  .list-group-item-mobile-anims button {
+    font-size: 11px;
+    padding: 6px;
+  }
+}
+
+/* ============================================
+   RESPONSIVE - SMARTPHONE PAYSAGE UNIQUEMENT
+   ============================================ */
+
+@media (max-width: 767px) and (orientation: landscape) {
+  body {
+    overflow: hidden;
+  }
+  
+  .container-full {
+    padding: 3px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .row {
+    flex: 1;
+    display: flex;
+    flex-wrap: nowrap;
+    min-height: 0;
+  }
+  
+  /* Colonne gauche - compacte */
+  .col-xs-2:first-child, .col-sm-2:first-child {
+    flex: 0 0 18%;
+    max-width: 18%;
+    overflow-y: auto;
+    padding: 2px;
+  }
+  
+  /* Colonne centrale - VIDÉO PRIORITAIRE */
+  .col-xs-10, .col-sm-8 {
+    flex: 1 1 64%;
+    max-width: 64%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+  }
+  
+  /* Colonne droite - compacte */
+  .col-xs-2:last-child, .col-sm-2:last-child {
+    flex: 0 0 18%;
+    max-width: 18%;
+    overflow-y: auto;
+    padding: 2px;
+  }
+  
+  /* VIDÉO - maximale */
+  #mediamobile {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  
+  #mediamobile > img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+    border-width: 3px;
+  }
+  
+  /* Boutons ultra compacts */
+  .list-group {
+    margin-bottom: 2px;
+  }
+  
+  .btn {
+    font-size: 9px;
+    padding: 3px 6px;
+    margin: 1px 0;
+  }
+  
+  .list-group-item-hardware {
+    padding: 2px;
+    font-size: 0.65em;
+  }
+  
+  .hardware-info progress {
+    width: 70%;
+  }
+  
+  .list-group-item-mobile-anims {
+    padding: 1px;
+  }
+  
+  .list-group-item-mobile-anims button {
+    width: 32%;
+    font-size: 8px;
+    padding: 3px 1px;
+    margin: 1px;
+  }
+  
+  .list-group-item-mobile button {
+    font-size: 8px;
+    padding: 4px 2px;
+    margin: 1px 0;
+  }
+  
+  .list-group-item-mobile-sauts button {
+    width: 49%;
+    font-size: 9px;
+    padding: 4px;
+  }
+  
+  .list-group-item-mobile-nav button,
+  .list-group-item-mobileblock button {
+    padding: 6px;
+    font-size: 12px;
+  }
+  
+  /* Section basse compacte */
+  .bottom-section {
+    padding: 3px 0;
+    gap: 3px;
+  }
+  
+  .bottom-buttons {
+    gap: 8px;
+  }
+  
+  .lang-switch {
+    padding: 2px;
+  }
+  
+  .lang-label {
+    padding: 4px 12px;
+    font-size: 10px;
+  }
+  
+  #log {
+    height: 25px;
+    font-size: 8px;
+    width: 98%;
+    padding: 2px;
+  }
+  
+  .help-button {
+    padding: 4px 12px;
+    font-size: 10px;
+  }
+  
+  .help-button i {
+    font-size: 12px;
+    margin-right: 4px;
+  }
+}
+
+/* ============================================
+   SMARTPHONE MODE PORTRAIT - MESSAGE
+   ============================================ */
+
+@media (max-width: 767px) and (orientation: portrait) {
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow: hidden;
+    padding: 20px;
+    height: 100vh;
+  }
+  
+  body::before {
+    content: '📱 ↻';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 100px;
+    color: white;
+    text-align: center;
+    animation: rotate 2s infinite;
+  }
+  
+  body::after {
+    content: 'Veuillez tourner votre appareil en mode paysage pour utiliser l\'interface';
+    position: fixed;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    max-width: 80%;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+  
+  @keyframes rotate {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+    25% { transform: translate(-50%, -50%) rotate(-10deg); }
+    50% { transform: translate(-50%, -50%) rotate(90deg); }
+    75% { transform: translate(-50%, -50%) rotate(80deg); }
+  }
+  
+  .container-full {
+    display: none;
+  }
+}
+
+/* ============================================
+   MODAL D'AIDE
+   ============================================ */
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 15px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 25px 30px;
+  border-radius: 15px 15px 0 0;
+  position: relative;
+  text-align: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 28px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 35px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  transform: rotate(90deg) scale(1.2);
+}
+
+.modal-body {
+  padding: 30px;
+}
+
+.control-section {
+  margin-bottom: 30px;
+}
+
+.control-section h3 {
+  color: #667eea;
+  font-size: 22px;
+  margin-bottom: 15px;
+  border-bottom: 3px solid #667eea;
+  padding-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.controls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.control-item {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid #667eea;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.control-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.control-item strong {
+  color: #667eea;
+  font-size: 16px;
+  margin-bottom: 5px;
+  display: block;
+  font-weight: bold;
+}
+
+.control-item span {
+  color: #333;
+  font-size: 14px;
+}
+
+.info-section {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  padding: 20px;
+  border-radius: 10px;
+  border: 3px solid #f39c12;
+}
+
+.info-section h3 {
+  color: #d35400;
+  border-bottom-color: #d35400;
+}
+
+.info-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+.info-section li {
+  padding: 8px 0;
+  font-size: 15px;
+  color: #2c3e50;
+}
+
+.info-section strong {
+  color: #d35400;
+}
+
+/* Modal responsive en paysage */
+@media (max-width: 767px) and (orientation: landscape) {
+  .modal-overlay {
+    padding: 5px;
+  }
+  
+  .modal-content {
+    max-width: 98%;
+    max-height: 98vh;
+  }
+  
+  .modal-header {
+    padding: 12px 15px;
+  }
+  
+  .modal-header h2 {
+    font-size: 16px;
+  }
+  
+  .close-btn {
+    font-size: 25px;
+    top: 8px;
+    right: 12px;
+  }
+  
+  .modal-body {
+    padding: 12px;
+  }
+  
+  .control-section {
+    margin-bottom: 12px;
+  }
+  
+  .control-section h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+  }
+  
+  .controls-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  
+  .control-item {
+    padding: 6px;
+  }
+  
+  .control-item strong {
+    font-size: 11px;
+  }
+  
+  .control-item span {
+    font-size: 9px;
+  }
+  
+  .info-section {
+    padding: 10px;
+  }
+  
+  .info-section h3 {
+    font-size: 14px;
+  }
+  
+  .info-section li {
+    font-size: 10px;
+    padding: 3px 0;
+  }
 }

@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Jumping Sumo Tchekoto Control Page</title>
+    <title>Jumping Sumo Tchekoto Control Page in French</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/script.js"></script>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
@@ -15,115 +15,122 @@
 
 <body>
 
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand">Jumping Sumo - Control Web App</a>
-            </div>
-        </div>
-    </nav>
     <div class="container container-full">
         <div class="row">
             <div class="col-xs-2 col-sm-2">
-                <h2>Status</h2>
+                
                 <ul class="list-group">
-                    <li class="list-group-item hardware-info">
+                    <li class="list-group-item-hardware hardware-info">
                         <i class="fa fa-battery-full"></i>
                         <progress id="battery-value" value="50" max="100"></progress>
                         <span id="battery_num">50%</span>
                     </li>
                 </ul>
 
-                <h2>Animations</h2>
+                
                 <ul class="list-group">
-                    <li class="list-group-item">
+                    <li class="list-group-item-mobile-anims">
                         <button type="button" class="btn btn-default" onclick="jsSpinFunction();">
-                            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>  &nbsp;Spin
+                            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                         </button>
-                    </li>
-                    <li class="list-group-item">
+                  
+                   
                         <button type="button" class="btn btn-default" onclick="tap();">
-                            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>  &nbsp;Tap
+                            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
                         </button>
-                    </li>
-                    <li class="list-group-item">
+                    
+                    
                         <button type="button" class="btn btn-default" onclick="jsSlowShakeFunction();">
-                            <span class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>  &nbsp;Slow shake
+                            <span class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
                         </button>
-                    </li>
                     
-                    <li class="list-group-item">
+                    
+                    
                         <button type="button" class="btn btn-default" onclick="spiral();">
-                            <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>  &nbsp;Spiral
+                            <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
                         </button>
-                    </li>
-                    <li class="list-group-item">
-                        <button type="button" class="btn btn-default" onclick="slalom();">
-                            <span class="glyphicon glyphicon-random" aria-hidden="true"></span>  &nbsp;Slalom
-                        </button>
-                    </li>
-                    <li class="list-group-item">
-                        <button type="button" class="btn btn-default btn-left" onclick="ondulation();">
-                            <span class="glyphicon glyphicon-tint" aria-hidden="true"></span> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>&nbsp;Ondulation
-                        </button>
-                    </li>
                     
-                    <li class="list-group-item">
+                    
+                        <button type="button" class="btn btn-default" onclick="slalom();">
+                            <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+                        </button>
+
+                        <button type="button" class="btn btn-default" onclick="ondulation();">
+                            <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
+                        </button>
+                </li>
+               
+                 <li class="list-group-item-mobile">
+                        
+                   
                         <button type="button" class="btn btn-default" onclick="spinJump();">
-                            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <span class="glyphicon glyphicon-export" aria-hidden="true"></span>&nbsp;Spin Jump
+                            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <span class="glyphicon glyphicon-export" aria-hidden="true"></span>
+                        </button>
+                  
+                  
+                        <button type="button" class="btn btn-default" onclick="spinToPosture();">
+                            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <span class="glyphicon glyphicon-tint" aria-hidden="true"></span>
                         </button>
                     </li>
-                    <li class="list-group-item">
-                        <button type="button" class="btn btn-default" onclick="spinToPosture();">
-                            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <span class="glyphicon glyphicon-tint" aria-hidden="true"></span>&nbsp;Spin to Standing
+                    <span>&nbsp;</span>
+                    <li class="list-group-item-mobileblock">
+                        <button id="up-btn" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
                         </button>
-                        <button type="button" class="btn" onclick="postureJumper();">
-                            <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>  &nbsp;Stop
+
+                        <button id="down-btn" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                         </button>
                     </li>
                 </ul>
 
             </div>
             <div class="col-xs-10 col-sm-8">
-                <div id="media">
-                    <img src="/video/0" class="img-responsive" alt="Video Stream">
+                <div id="mediamobile">
+                    <img src="/video/0" class="img-responsive" alt="DRONE NOT CONNECTED OR STREAM DOWN">
                 </div>
             </div>
             <div class="col-xs-2 col-sm-2">
-                <h2>Actions</h2>
                 <ul class="list-group">
-                    <li class="list-group-item">
+
+                    <li class="list-group-item-mobile-sauts">
                         <button type="button" class="btn btn-default" onclick="jsJumpFunction();">
-                            <span class="glyphicon glyphicon-open" aria-hidden="true"></span>  &nbsp;High Jump
+                            <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
                         </button>
-                    </li>
-                    <li class="list-group-item">
+
                         <button type="button" class="btn btn-default" onclick="jsLongJumpFunction();">
-                            <span class="glyphicon glyphicon-export" aria-hidden="true"></span>  &nbsp;Long Jump
+                            <span class="glyphicon glyphicon-export" aria-hidden="true"></span>
                         </button>
                     </li>
                 </ul>
-                <h2>Positions</h2>
                 <ul class="list-group">
-                    <li class="list-group-item">
-                        <button type="button" class="btn btn-default" onclick="postureJumper();">
-                            <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>  &nbsp;Default
+                    <li class="list-group-item-mobile">
+                        <button id="posture-jumper-btn" type="button" class="btn btn-default" onclick="postureJumper();">
+                            <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>  &nbsp;<span data-translate="btn-default">Default Stance</span>
+                        </button>
+                    
+
+                        <button id="posture-standing-btn" type="button" class="btn btn-default" onclick="postureStanding();">
+                            <span class="glyphicon glyphicon-tint" aria-hidden="true"></span> &nbsp;<span data-translate="btn-metronome">Standing Stance</span>
+                        </button>
+                    
+                    
+                        <button id="posture-kicker-btn" type="button" class="btn btn-default" onclick="postureKicker();">
+                            <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>  &nbsp;<span data-translate="btn-pusher">Kicker Stance</span>
+                        </button>
+                        <button id="push-btn" type="button" class="btn" onclick="jsLongJumpFunction();">
+                            <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <span class="glyphicon glyphicon-eject" aria-hidden="true"></span>  &nbsp;<span data-translate="btn-push">Kick</span>
                         </button>
                     </li>
-                    <li class="list-group-item">
-                        <button type="button" class="btn btn-default" onclick="postureStanding();">
-                            <span class="glyphicon glyphicon-tint" aria-hidden="true"></span>  &nbsp;Standing
+                    <span>&nbsp;</span>
+                    <li class="list-group-item-mobile-nav">
+
+                        <button id="left-btn" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
                         </button>
-                        <button type="button" class="btn" onclick="postureJumper();">
-                            <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>  &nbsp;Stop
-                        </button>
-                    </li>
-                    <li class="list-group-item">
-                        <button type="button" class="btn btn-default" onclick="postureKicker();">
-                            <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>  &nbsp;Kicker
-                        </button>
-                        <button type="button" class="btn" onclick="jsLongJumpFunction();">
-                            <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <span class="glyphicon glyphicon-eject" aria-hidden="true"></span>  &nbsp;Kick
+
+                        <button id="right-btn" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
                         </button>
                     </li>
                 </ul>
@@ -131,15 +138,84 @@
             </div>
         </div>
 
-    </div>
-    </div>
-    <footer class="footer">
-        <div class="container">
-            <p class="text-muted">
-                HINT : use the arrow keys to move the drone and the buttons on the left for special moves. <a href="français.html">Version Française</a>
-            </p>
+        <!-- Section basse : Log et Aide -->
+        <div class="bottom-section">
+            <pre id="log"></pre>
+            <div class="bottom-buttons">
+                <div class="lang-switch">
+                    <input type="radio" id="lang-en" name="language" value="en" checked>
+                    <label for="lang-en" class="lang-label">EN 🇬🇧</label>
+                    
+                    <input type="radio" id="lang-fr" name="language" value="fr">
+                    <label for="lang-fr" class="lang-label">FR 🇫🇷</label>
+                    
+                    <div class="lang-slider"></div>
+                </div>
+                <button id="help-btn" class="help-button" onclick="toggleHelpModal()">
+                    <i class="fa fa-question-circle"></i> <span data-translate="help">Help</span>
+                </button>
+            </div>
         </div>
-    </footer>
+
+    </div>
+
+    <!-- Modal d'aide pour le mapping des touches -->
+    <div id="help-modal" class="modal-overlay" onclick="closeHelpModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 data-translate="modal-title">🎮 Controls Guide</h2>
+                <button class="close-btn" onclick="toggleHelpModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <span data-translate="connectinfo">Connect your Gamepad and try. Check out testgamepad.html</span>
+                <!-- Image du schéma des contrôles -->
+                <div class="control-section">
+                    <img src="/img/controls.png" alt="Gamepad Controls" style="width: 100%; max-width: 800px; height: auto; border-radius: 10px; margin: 0 auto; display: block;">
+                </div>
+
+                <!-- Section batterie -->
+                <div class="control-section info-section">
+                    <h3 data-translate="info-section">ℹ️ Information</h3>
+                    <ul>
+                        <li><span data-translate="battery-10">🔋 <strong>Battery &lt; 10%</strong>: Light vibration</span></li>
+                        <li><span data-translate="battery-5">🪫 <strong>Battery &lt; 5%</strong>: Strong continuous vibration</span></li>
+                        <li><span data-translate="battery-15">⚠️ <strong>Battery &lt; 15%</strong>: Jumps disabled</span></li>
+                    </ul>
+                </div>
+
+                <!-- Section clavier -->
+                <div class="control-section">
+                    <h3 data-translate="keyboard-section">⌨️ Keyboard</h3>
+                    <div class="controls-grid">
+                        <div class="control-item">
+                            <strong>↑ ↓ ← →</strong>
+                            <span data-translate="movements">Movements</span>
+                        </div>
+                        <div class="control-item">
+                            <strong data-translate="space-key">Space</strong>
+                            <span data-translate="jump">⤴️ Jump</span>
+                        </div>
+                        <div class="control-item">
+                            <strong>E</strong>
+                            <span data-translate="spin-jump">🤘 Spin Jump</span>
+                        </div>
+                        <div class="control-item">
+                            <strong>Shift</strong>
+                            <span>👇 Tap</span>
+                        </div>
+                        <div class="control-item">
+                            <strong data-translate="escape-key">Escape</strong>
+                            <span data-translate="stop">⏹️ Stop</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load the gamepad control script -->
+    <script src="/js/script.js"></script>
+
 </body>
 
 </html>

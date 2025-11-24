@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jumping Sumo - Gamepad Test (No Server)</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        #log {
+            border: 2px solid #333;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            background-color: #1a1a1a;
+            color: #0f0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .connected {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .disconnected {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #2196F3;
+            color: white;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background-color: #0b7dda;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .warning {
+            background-color: #ff9800;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>🎮 Gamepad Test (Standalone - No Server)</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Note:</strong> This is a test version that works without a server. 
+            Commands are only logged, not sent to any drone. To actually control your drone, 
+            you need to run the Node.js server with Socket.io.
+        </div>
+
+        <div id="status" class="status disconnected">
+            No Controller Detected - Press any button on your Stadia controller
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="jsJumpFunction();">Jump</button>
+            <button class="btn" onclick="jsSpinFunction();">Spin</button>
+            <button class="btn" onclick="tap();">Tap</button>
+            <button class="btn" onclick="jsSlowShakeFunction();">Slow Shake</button>
+            <button class="btn" onclick="spiral();">Spiral</button>
+            <button class="btn" onclick="slalom();">Slalom</button>
+            <button class="btn" onclick="ondulation();">Ondulation</button>
+            <button class="btn" onclick="spinJump();">Spin Jump</button>
+            <button class="btn" onclick="spinToPosture();">Spin to Posture</button>
+            <button class="btn" onclick="postureStanding();">Standing</button>
+            <button class="btn" onclick="postureJumper();">Jumper</button>
+            <button class="btn" onclick="postureKicker();">Kicker</button>
+        </div>
+
+        <h2>📝 Event Log:</h2>
+        <pre id="log">Waiting for input... (Use arrow keys or connect gamepad)</pre>
+
+    </div>
+
+    <script>
+// Gamepad control state tracking
+var gamepadState = {
+  previousButtons: {},
+  movementActive: {
+    forward: false,
+    backward: false,
+    left: false,
+    right: false
+  }
+};
+
+var rAF =
+  window.mozRequestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.requestAnimationFrame;
+
+var rAFStop =
+  window.mozCancelRequestAnimationFrame ||
+  window.webkitCancelRequestAnimationFrame ||
+  window.cancelRequestAnimationFrame;
+
+var start;
+
+// Gamepad connection event
+window.addEventListener("gamepadconnected", function (e) {
+  var gp = navigator.getGamepads()[e.gamepad.index];
+
+  log("🎮 Gamepad connected: " + gp.id);
+  
+  document.getElementById("status").innerHTML = "Controller Connected!";
+  document.getElementById("status").className = "status connected";
+
+  // Initialize button state tracking
+  for (var i = 0; i < gp.buttons.length; i++) {
+    gamepadState.previousButtons[i] = false;
+  }
+
+  gameLoop();
+});
+
+// Gamepad disconnection event
+window.addEventListener("gamepaddisconnected", function (e) {
+  log("❌ Gamepad disconnected");
+  
+  document.getElementById("status").innerHTML = "No Controller Detected";
+  document.getElementById("status").className = "status disconnected";
+
+  // Stop all movement when controller disconnects
+  stopAllMovement();
+
+  rAFStop(start);
+});
+
+// Fallback for browsers without GamepadEvent
+if (!("GamepadEvent" in window)) {
+  var interval = setInterval(pollGamepads, 500);
+}
+
+function pollGamepads() {
+  var gamepads = navigator.getGamepads
+    ? navigator.getGamepads()
+    : navigator.webkitGetGamepads
+    ? navigator.webkitGetGamepads()
+    : [];
+  for (var i = 0; i < gamepads.length; i++) {
+    var gp = gamepads[i];
+    if (gp) {
+      // Initialize button states
+      for (var j = 0; j < gp.buttons.length; j++) {
+        gamepadState.previousButtons[j] = false;
+      }
+      gameLoop();
+      clearInterval(interval);
+    }
+  }
+}
+
+// Stop all movement commands
+function stopAllMovement() {
+  if (gamepadState.movementActive.forward) {
+    sendCommand('keyup', 'forward');
+    gamepadState.movementActive.forward = false;
+  }
+  if (gamepadState.movementActive.backward) {
+    sendCommand('keyup', 'backward');
+    gamepadState.movementActive.backward = false;
+  }
+  if (gamepadState.movementActive.left) {
+    sendCommand('keyup', 'left');
+    gamepadState.movementActive.left = false;
+  }
+  if (gamepadState.movementActive.right) {
+    sendCommand('keyup', 'right');
+    gamepadState.movementActive.right = false;
+  }
+}
+
+// Mock socket.emit for testing without server
+function sendCommand(type, data) {
+  log(`📤 Command: ${type} → ${data}`);
+}
+
+// Handle left stick movement (drone movement)
+function handleLeftStick(axes) {
+  var deadzone = 0.2;
+  var x = Math.abs(axes[0]) > deadzone ? axes[0] : 0;
+  var y = Math.abs(axes[1]) > deadzone ? axes[1] : 0;
+
+  // Forward/Backward (Y-axis)
+  if (y < -deadzone && !gamepadState.movementActive.forward) {
+    sendCommand('keydown', 'forward');
+    gamepadState.movementActive.forward = true;
+    gamepadState.movementActive.backward = false;
+    log('⬆️ Moving forward');
+  } else if (y > deadzone && !gamepadState.movementActive.backward) {
+    sendCommand('keydown', 'backward');
+    gamepadState.movementActive.backward = true;
+    gamepadState.movementActive.forward = false;
+    log('⬇️ Moving backward');
+  } else if (Math.abs(y) <= deadzone) {
+    if (gamepadState.movementActive.forward) {
+      sendCommand('keyup', 'forward');
+      gamepadState.movementActive.forward = false;
+    }
+    if (gamepadState.movementActive.backward) {
+      sendCommand('keyup', 'backward');
+      gamepadState.movementActive.backward = false;
+    }
+  }
+
+  // Left/Right (X-axis)
+  if (x < -deadzone && !gamepadState.movementActive.left) {
+    sendCommand('keydown', 'left');
+    gamepadState.movementActive.left = true;
+    gamepadState.movementActive.right = false;
+    log('⬅️ Moving left');
+  } else if (x > deadzone && !gamepadState.movementActive.right) {
+    sendCommand('keydown', 'right');
+    gamepadState.movementActive.right = true;
+    gamepadState.movementActive.left = false;
+    log('➡️ Moving right');
+  } else if (Math.abs(x) <= deadzone) {
+    if (gamepadState.movementActive.left) {
+      sendCommand('keyup', 'left');
+      gamepadState.movementActive.left = false;
+    }
+    if (gamepadState.movementActive.right) {
+      sendCommand('keyup', 'right');
+      gamepadState.movementActive.right = false;
+    }
+  }
+}
+
+// Handle button presses for actions
+function handleButtonPress(button, buttonIndex) {
+  if (button.pressed && !gamepadState.previousButtons[buttonIndex]) {
+    switch(buttonIndex) {
+      case 0: // A button - Jump
+        sendCommand('action', 'jump');
+        log('⤴️ Jump');
+        break;
+      case 1: // B button - Spin
+        sendCommand('action', 'spin');
+        log('🤪 Spin');
+        break;
+      case 2: // X button - Tap
+        sendCommand('action', 'tap');
+        log('👆 Tap');
+        break;
+      case 3: // Y button - Long Jump
+        sendCommand('action', 'longJump');
+        log('⏭ Long Jump');
+        break;
+      case 4: // LB - Slow Shake
+        sendCommand('action', 'slowshake');
+        log('🧐 Slow Shake');
+        break;
+      case 5: // RB - Metronome
+        sendCommand('action', 'metronome');
+        log('😤 Metronome');
+        break;
+      case 6: // LT - Standing Posture
+        if (button.value > 0.5) {
+          sendCommand('action', 'standing');
+          log('🧍 Standing');
+        }
+        break;
+      case 7: // RT - Jumper Posture
+        if (button.value > 0.5) {
+          sendCommand('action', 'jumper');
+          log('🤸 Jumper');
+        }
+        break;
+      case 8: // Select/Back - Kicker Posture
+        sendCommand('action', 'kicker');
+        log('🦵 Kicker');
+        break;
+      case 9: // Start/Menu - Stop
+        sendCommand('action', 'stop');
+        stopAllMovement();
+        log('⏹️ Stop');
+        break;
+      case 10: // Left Stick Click - Ondulation
+        sendCommand('action', 'ondulation');
+        log('🌊 Ondulation');
+        break;
+      case 11: // Right Stick Click - Spin Jump
+        sendCommand('action', 'spinjump');
+        log('🤘😎🤚 Spin Jump');
+        break;
+      case 12: // D-pad Up - Spin to Posture
+        sendCommand('action', 'spintoposture');
+        log('🔄 Spin to Posture');
+        break;
+      case 13: // D-pad Down - Spiral
+        sendCommand('action', 'spiral');
+        log('🌀 Spiral');
+        break;
+      case 14: // D-pad Left - Slalom
+        sendCommand('action', 'slalom');
+        log('⛷️ Slalom');
+        break;
+      case 15: // D-pad Right
+        log('➡️ D-pad Right');
+        break;
+    }
+  }
+  
+  gamepadState.previousButtons[buttonIndex] = button.pressed;
+}
+
+// Main game loop
+function gameLoop() {
+  var gamepads = navigator.getGamepads
+    ? navigator.getGamepads()
+    : navigator.webkitGetGamepads
+    ? navigator.webkitGetGamepads()
+    : [];
+  if (!gamepads) return;
+
+  var gp = gamepads[0];
+
+  if (gp) {
+    handleLeftStick(gp.axes);
+    for (var i = 0; i < gp.buttons.length; i++) {
+      handleButtonPress(gp.buttons[i], i);
+    }
+  }
+
+  start = rAF(gameLoop);
+}
+
+// Logging function
+function log(msg) {
+  const container = document.getElementById("log");
+  if (container) {
+    const timestamp = new Date().toLocaleTimeString();
+    container.textContent = `[${timestamp}] ${msg}\n${container.textContent}`;
+  }
+  console.log(msg);
+}
+
+// Button functions
+function jsJumpFunction() {
+  log("⤴️ Jump (button)");
+  sendCommand('action', 'jump');
+}
+
+function jsLongJumpFunction() {
+  log("⏭ Long Jump (button)");
+  sendCommand('action', 'longJump');
+}
+
+function jsSpinFunction() {
+  log("🤪 Spin (button)");
+  sendCommand('action', 'spin');
+}
+
+function jsSlowShakeFunction() {
+  log("🧐 Slow Shake (button)");
+  sendCommand('action', 'slowshake');
+}
+
+function tap() {
+  log("👆 Tap (button)");
+  sendCommand('action', 'tap');
+}
+
+function ondulation() {
+  log("🌊 Ondulation (button)");
+  sendCommand('action', 'ondulation');
+}
+
+function spinJump() {
+  log("🤘😎🤚 Spin Jump (button)");
+  sendCommand('action', 'spinjump');
+}
+
+function spinToPosture() {
+  log("🔄 Spin to Posture (button)");
+  sendCommand('action', 'spintoposture');
+}
+
+function spiral() {
+  log("🌀 Spiral (button)");
+  sendCommand('action', 'spiral');
+}
+
+function slalom() {
+  log("⛷️ Slalom (button)");
+  sendCommand('action', 'slalom');
+}
+
+function postureStanding() {
+  log("🧍 Standing (button)");
+  sendCommand('action', 'standing');
+}
+
+function postureJumper() {
+  log("🤸 Jumper (button)");
+  sendCommand('action', 'jumper');
+}
+
+function postureKicker() {
+  log("🦵 Kicker (button)");
+  sendCommand('action', 'kicker');
+}
+
+// Keyboard controls
+document.onkeydown = function (e) {
+  switch (e.keyCode) {
+    case 69: // E key
+      sendCommand('action', 'spinjump');
+      log('🤘😎🤚 Spin Jump (keyboard)');
+      break;
+    case 16: // Shift key
+      sendCommand('action', 'tap');
+      log('👆 Tap (keyboard)');
+      break;
+    case 27: // Escape key
+      sendCommand('action', 'stop');
+      log('⏹️ Stop (keyboard)');
+      break;
+    case 32: // Space key
+      sendCommand('action', 'jump');
+      log('⤴️ Jump (keyboard)');
+      break;
+    case 37: // Left arrow
+      sendCommand('keydown', 'left');
+      log('⬅️ Left arrow');
+      break;
+    case 38: // Up arrow
+      sendCommand('keydown', 'forward');
+      log('⬆️ Up arrow');
+      break;
+    case 39: // Right arrow
+      sendCommand('keydown', 'right');
+      log('➡️ Right arrow');
+      break;
+    case 40: // Down arrow
+      sendCommand('keydown', 'backward');
+      log('⬇️ Down arrow');
+      break;
+  }
+};
+
+document.onkeyup = function (e) {
+  switch (e.keyCode) {
+    case 37:
+      sendCommand('keyup', 'left');
+      break;
+    case 38:
+      sendCommand('keyup', 'forward');
+      break;
+    case 39:
+      sendCommand('keyup', 'right');
+      break;
+    case 40:
+      sendCommand('keyup', 'backward');
+      break;
+  }
+};
+
+log('✅ Page loaded - Ready for input!');
+    </script>
+
+</body>
+
+</html>

@@ -11,7 +11,7 @@
     "license": "MIT",
     "dependencies": {
         "bootstrap": "^3.3.6",
-        "express": "^4.13.3",
+        "express": "^4.18.2",
         "mjpeg-server": "^0.2.1",
         "node-sumo": "git+https://github.com/forgeByAcision/node-sumo.git",
         "open": "0.0.5",
